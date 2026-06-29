@@ -1,0 +1,10 @@
+fastapi>=0.115
+uvicorn[standard]>=0.32
+openai>=1.54
+pydantic>=2.9
+pydantic-settings>=2.6
+python-dotenv>=1.0
+httpx>=0.27
+# Used from Day 2 (Mongo) / Day 3 (SSE) — included now to avoid image rebuilds
+motor>=3.6
+sse-starlette>=2.1

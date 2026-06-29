@@ -1,0 +1,84 @@
+:root {
+  --bg: #0a0e14;
+  --surface: #121822;
+  --line: #1f2937;
+  --text: #e6edf3;
+  --muted: #8b98a9;
+  --accent: #4cc2ff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: radial-gradient(1200px 600px at 70% -10%, #14202e 0%, var(--bg) 60%);
+  color: var(--text);
+  font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
+  min-height: 100vh;
+}
+
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 14vh 24px;
+}
+
+.kicker {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+h1 {
+  font-size: clamp(3rem, 1rem + 9vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: 0.2em 0 0.3em;
+}
+
+.lede {
+  font-size: 1.15rem;
+  color: var(--muted);
+  max-width: 52ch;
+}
+
+.lede em {
+  color: var(--text);
+  font-style: normal;
+  border-bottom: 2px solid var(--accent);
+}
+
+.card {
+  margin-top: 2.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+
+.card-label {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+.card code {
+  color: var(--accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+.foot {
+  margin-top: 3rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
