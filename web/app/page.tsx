@@ -1,35 +1,66 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import SidePanel from "./components/SidePanel";
+import { getPorts, getDisruptions, getShipments } from "./lib/api";
+import type { Disruption, FlatPort, Shipment } from "./types";
 
-const ENGINE = process.env.NEXT_PUBLIC_ENGINE_URL || "http://localhost:8000";
+const GlobeMap = dynamic(() => import("./components/GlobeMap"), { ssr: false });
 
 export default function Home() {
-  const [health, setHealth] = useState("checking…");
+  const [ports, setPorts] = useState<FlatPort[]>([]);
+  const [disruptions, setDisruptions] = useState<Disruption[]>([]);
+  const [shipments, setShipments] = useState<Shipment[]>([]);
+  const [selected, setSelected] = useState<Disruption | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${ENGINE}/health`)
-      .then((r) => r.json())
-      .then((d) => setHealth(JSON.stringify(d)))
-      .catch((e) => setHealth(`unreachable: ${e}`));
+    Promise.all([getPorts(), getDisruptions(), getShipments()])
+      .then(([portCollection, disruptionList, shipmentList]) => {
+        // Flatten GeoJSON FeatureCollection → FlatPort[]
+        const flat: FlatPort[] = portCollection.features.map(
+          (f: {
+            geometry: { coordinates: [number, number] };
+            properties: {
+              id: string;
+              name: string;
+              country: string;
+              annual_teu: number;
+            };
+          }) => ({
+            id: f.properties.id,
+            name: f.properties.name,
+            country: f.properties.country,
+            annual_teu: f.properties.annual_teu,
+            coordinates: f.geometry.coordinates,
+          })
+        );
+        setPorts(flat);
+        setDisruptions(disruptionList);
+        setShipments(shipmentList);
+      })
+      .catch((e: unknown) => {
+        setError(e instanceof Error ? e.message : "Failed to load data");
+      });
   }, []);
 
   return (
-    <main className="wrap">
-      <span className="kicker">Track 3 · Agent Society</span>
-      <h1>Quorum</h1>
-      <p className="lede">
-        A multi-agent society that decides whether an external disruption is{" "}
-        <em>material</em> to your shipments — then routes, recovers, and proves
-        it against ground truth.
-      </p>
-      <div className="card">
-        <span className="card-label">engine /health</span>
-        <code>{health}</code>
-      </div>
-      <p className="foot">
-        Day 1 scaffold · engine + web wired. Live map &amp; the society land next.
-      </p>
-    </main>
+    <div className="app-layout">
+      {error && <div className="error-banner">{error} — is the engine running?</div>}
+      <GlobeMap
+        ports={ports}
+        disruptions={disruptions}
+        shipments={shipments}
+        selectedId={selected?.id ?? null}
+        onDisruptionSelect={setSelected}
+      />
+      <SidePanel
+        disruptions={disruptions}
+        shipments={shipments}
+        selected={selected}
+        onSelect={setSelected}
+      />
+    </div>
   );
 }

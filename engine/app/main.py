@@ -8,6 +8,7 @@ from . import qwen
 from .config import settings
 from .db.client import close_client
 from .db.indexes import create_all_indexes
+from .routers import disruptions, ports, shipments
 
 
 @asynccontextmanager
@@ -26,6 +27,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(ports.router)
+app.include_router(disruptions.router)
+app.include_router(shipments.router)
 
 
 @app.get("/")

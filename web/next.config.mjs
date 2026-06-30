@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Static export -> ./out, served by nginx (no Node runtime in prod; avoids
-  // OOM on small ECS instances since the build runs locally / in CI).
   output: "export",
   images: { unoptimized: true },
+  // deck.gl v9 ships ESM that Next.js 15 needs to transpile
+  transpilePackages: ["@deck.gl/core", "@deck.gl/layers", "@deck.gl/mapbox"],
 };
 
 export default nextConfig;

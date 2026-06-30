@@ -14,6 +14,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css"
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
