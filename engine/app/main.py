@@ -1,16 +1,23 @@
-"""Quorum engine — FastAPI app.
-
-Day 1 surface: liveness + the Qwen cascade smoke test. The society, ingestion,
-exposure mapping, SSE stream and eval harness land on Days 2–4.
-"""
+"""Quorum engine — FastAPI app."""
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import qwen
 from .config import settings
+from .db.client import close_client
+from .db.indexes import create_all_indexes
 
-app = FastAPI(title="Quorum Engine", version="0.1.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await create_all_indexes()
+    yield
+    await close_client()
+
+
+app = FastAPI(title="Quorum Engine", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -50,7 +57,7 @@ async def llm_test(
         return await qwen.complete(
             tier, [{"role": "user", "content": prompt}], max_tokens=64
         )
-    except Exception as exc:  # surface the real cause to the caller
+    except Exception as exc:
         raise HTTPException(
             status_code=502, detail=f"Qwen call failed: {type(exc).__name__}: {exc}"
         )
