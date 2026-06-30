@@ -43,3 +43,41 @@ export type Shipment = {
   status: "in_transit" | "delayed" | "arrived";
   created_at: string;
 };
+
+export type SocietyPhase =
+  | "skeptic"
+  | "analyst"
+  | "judge"
+  | "escalating"
+  | "complete"
+  | "error";
+
+export type SocietyEvent = {
+  phase: SocietyPhase;
+  status?: "running" | "done";
+  text?: string;
+  tier?: "flash" | "max";
+  is_material?: boolean;
+  confidence?: number;
+  reasoning?: string;
+  reason?: string;
+  threshold?: number;
+  determination_id?: string;
+  skeptic_argument?: string;
+  analyst_argument?: string;
+  judge_reasoning?: string;
+  message?: string;
+};
+
+export type Determination = {
+  id: string;
+  disruption_id: string;
+  shipment_id: string;
+  is_material: boolean;
+  confidence: number;
+  tier_used: "flash" | "max";
+  skeptic_argument: string;
+  analyst_argument: string;
+  judge_reasoning: string;
+  created_at: string;
+};
