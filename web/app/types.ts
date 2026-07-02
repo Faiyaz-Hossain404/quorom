@@ -69,6 +69,39 @@ export type SocietyEvent = {
   message?: string;
 };
 
+export type EvalCase = {
+  shipment_id: string;
+  disruption_id: string;
+  vessel_name: string;
+  disruption_title: string;
+  ground_truth_material: boolean;
+  baseline_is_material: boolean | null;
+  baseline_confidence: number | null;
+  baseline_correct: boolean | null;
+  society_is_material: boolean | null;
+  society_confidence: number | null;
+  society_tier_used: "flash" | "max" | null;
+  society_correct: boolean | null;
+  determination_id: string | null;
+  error: string | null;
+};
+
+export type EvalSummary = {
+  total_cases: number;
+  society_correct: number;
+  baseline_correct: number;
+  society_accuracy: number;
+  baseline_accuracy: number;
+  society_beats_baseline: boolean;
+};
+
+export type EvalRun = {
+  run_id: string;
+  created_at: string;
+  summary: EvalSummary;
+  cases?: EvalCase[];
+};
+
 export type Determination = {
   id: string;
   disruption_id: string;

@@ -1,4 +1,4 @@
-import type { Determination, SocietyEvent } from "../types";
+import type { Determination, EvalRun, SocietyEvent } from "../types";
 
 const ENGINE = process.env.NEXT_PUBLIC_ENGINE_URL ?? "http://localhost:8000";
 
@@ -47,6 +47,24 @@ export function streamSociety(
     onDone();
   };
   return () => es.close();
+}
+
+export async function runEval(): Promise<EvalRun> {
+  const r = await fetch(`${ENGINE}/eval/run`, { method: "POST" });
+  if (!r.ok) throw new Error(`POST /eval/run: ${r.status}`);
+  return r.json();
+}
+
+export async function getEvalResults(): Promise<EvalRun[]> {
+  const r = await fetch(`${ENGINE}/eval/results`);
+  if (!r.ok) throw new Error(`GET /eval/results: ${r.status}`);
+  return r.json();
+}
+
+export async function getEvalRun(runId: string): Promise<EvalRun> {
+  const r = await fetch(`${ENGINE}/eval/results/${runId}`);
+  if (!r.ok) throw new Error(`GET /eval/results/${runId}: ${r.status}`);
+  return r.json();
 }
 
 export async function getDeterminations(params?: {

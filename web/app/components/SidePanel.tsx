@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { streamSociety } from "../lib/api";
 import type { Disruption, Shipment, SocietyEvent } from "../types";
+import EvalPanel from "./EvalPanel";
 
 const SEV_COLOR: Record<number, string> = {
   5: "#ef4444",
@@ -37,6 +38,12 @@ export default function SidePanel({
   selected,
   onSelect,
 }: Props) {
+  const [showEval, setShowEval] = useState(false);
+
+  if (showEval) {
+    return <EvalPanel onBack={() => setShowEval(false)} />;
+  }
+
   if (selected) {
     return (
       <DetailView
@@ -92,7 +99,10 @@ export default function SidePanel({
       </section>
 
       <div className="panel-footer">
-        Click a disruption marker to run the agent society
+        <span>Click a disruption marker to run the agent society</span>
+        <button className="eval-link-btn" onClick={() => setShowEval(true)}>
+          Eval
+        </button>
       </div>
     </div>
   );

@@ -27,3 +27,6 @@ async def create_all_indexes() -> None:
     await db.determinations.create_index(
         [("created_at", ASCENDING)], background=True
     )
+
+    # eval runs — newest first lookups
+    await db.eval_runs.create_index([("created_at", ASCENDING)], background=True)
